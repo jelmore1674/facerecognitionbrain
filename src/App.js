@@ -6,13 +6,25 @@ import ImageLinkForm from './components/imagelinkform/imagelinkform';
 import Rank from './components/rank/rank';
 import Particles from 'react-tsparticles';
 import FaceRecognition from './components/facerecognition/facerecognition';
-import Clarifai from 'clarifai';
+
 import SignIn from './components/signin/signin';
 import Register from './components/register/resgister';
 
-const app = new Clarifai.App({
-	apiKey: 'f1866e97d6404d20826bfa5dac516bcc',
-});
+const initialState = {
+	input: '',
+	imageUrl: '',
+	box: {},
+	route: 'signin',
+	isSignedIn: false,
+	user: {
+		id: '',
+		name: '',
+		email: '',
+		entries: 0,
+		joined: '',
+	},
+};
+
 class App extends React.Component {
 	constructor(props) {
 		super(props);
@@ -155,17 +167,18 @@ class App extends React.Component {
 	};
 
 	onButtonSubmit = () => {
-		console.log('click');
 		this.setState({ imageUrl: this.state.input });
-		app.models
-			.predict(
-				Clarifai.FACE_DETECT_MODEL,
-				// THE JPG
-				this.state.input
-			)
+		fetch('https://agile-ocean-32400.herokuapp.com/imageurl', {
+			method: 'post',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				input: this.state.input,
+			}),
+		})
+			.then((response) => response.json())
 			.then((response) => {
 				if (response) {
-					fetch('http://localhost:3000/image', {
+					fetch('https://agile-ocean-32400.herokuapp.com/image', {
 						method: 'put',
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({
@@ -184,13 +197,13 @@ class App extends React.Component {
 				this.displayFaceBox(this.calculateFaceLocation(response));
 			})
 			.catch((err) => {
-				console.log(err);
+				console.log('Failed to find face, error with image', err);
 			});
 	};
 
 	onRouteChange = (route) => {
 		if (route === 'signout') {
-			this.setState({ isSignedIn: false });
+			this.setState(initialState);
 		} else if (route === 'home') {
 			this.setState({ isSignedIn: true });
 		}
@@ -222,9 +235,9 @@ class App extends React.Component {
 							onInputChange={this.onInputChange}
 							onButtonSubmit={this.onButtonSubmit}
 						/>
-						<FaceRecognition imageUrl={imageUrl} box={box} />
+						<FaceRecognition box={box} imageUrl={imageUrl} />
 					</div>
-				) : route === 'signin' || route === 'signout' ? (
+				) : route === 'signin' ? (
 					<SignIn
 						loadUser={this.loadUser}
 						onRouteChange={this.onRouteChange}
