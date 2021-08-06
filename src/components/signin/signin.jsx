@@ -17,8 +17,12 @@ class SignIn extends React.Component {
 		this.setState({ signInPassword: event.target.value });
 	};
 
+	saveAuthTokenInSession = (token) => {
+		window.sessionStorage.setItem('token', token);
+	};
+
 	onSubmitSignIn = () => {
-		fetch('https://agile-ocean-32400.herokuapp.com/signin', {
+		fetch('http://localhost:3000/signin', {
 			method: 'post',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
@@ -27,11 +31,26 @@ class SignIn extends React.Component {
 			}),
 		})
 			.then((response) => response.json())
-			.then((user) => {
-				if (user.id) {
+			.then((data) => {
+				if (data.userId && data.success) {
+					this.saveAuthTokenInSession(data.token);
+
+					fetch(`http://localhost:3000/profile/${data.userId}`, {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+							Authorization: data.token,
+						},
+					})
+						.then((resp) => resp.json())
+						.then((user) => {
+							console.log(user);
+							if (user && user.email) {
+								this.props.loadUser(user);
+								this.props.onRouteChange('home');
+							}
+						});
 					// does the user exist? Did we receive a user with a property of id?
-					this.props.loadUser(user);
-					this.props.onRouteChange('home');
 				}
 			});
 	};
@@ -53,7 +72,7 @@ class SignIn extends React.Component {
 									Email
 								</label>
 								<input
-									className='pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100'
+									className='pa2 input-reset ba bg-transparent hover-bg-black hover-white hover-black w-100'
 									type='email'
 									name='email-address'
 									id='email-address'
@@ -67,7 +86,7 @@ class SignIn extends React.Component {
 									Password
 								</label>
 								<input
-									className='b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100'
+									className='b pa2 input-reset ba bg-transparent hover-bg-black hover-white hover-black w-100'
 									type='password'
 									name='password'
 									id='password'

@@ -3,7 +3,10 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'tachyons';
+import './index.css';
+import './components/navigation/SignIn.css';
 
 ReactDOM.render(
 	<React.StrictMode>
