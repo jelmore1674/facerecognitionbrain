@@ -12,14 +12,17 @@ class Profile extends React.Component {
 	}
 
 	onProfileUpdate = (data) => {
-		fetch(`http://localhost:3000/profile/${this.props.user.id}`, {
-			method: 'POST',
-			headers: {
-				'content-type': 'application/json',
-				Authorization: window.sessionStorage.getItem('token'),
-			},
-			body: JSON.stringify({ formInput: data }),
-		})
+		fetch(
+			`https://smartbrain-api.justinelmore.dev/profile/${this.props.user.id}`,
+			{
+				method: 'POST',
+				headers: {
+					'content-type': 'application/json',
+					Authorization: window.sessionStorage.getItem('token'),
+				},
+				body: JSON.stringify({ formInput: data }),
+			}
+		)
 			.then((response) => {
 				if (response.status === 200 || response.status === 304)
 					this.props.toggleModal();

@@ -41,7 +41,7 @@ class App extends React.Component {
 	componentDidMount() {
 		const token = window.sessionStorage.getItem('token');
 		if (token) {
-			fetch('http://localhost:3000/signin', {
+			fetch('https://smartbrain-api.justinelmore.dev/signin', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -51,13 +51,16 @@ class App extends React.Component {
 				.then((resp) => resp.json())
 				.then((data) => {
 					if (data && data.id) {
-						fetch(`http://localhost:3000/profile/${data.id}`, {
-							method: 'GET',
-							headers: {
-								'Content-Type': 'application/json',
-								Authorization: token,
-							},
-						})
+						fetch(
+							`https://smartbrain-api.justinelmore.dev/profile/${data.id}`,
+							{
+								method: 'GET',
+								headers: {
+									'Content-Type': 'application/json',
+									Authorization: token,
+								},
+							}
+						)
 							.then((resp) => resp.json())
 							.then((user) => {
 								console.log(user);
@@ -203,7 +206,7 @@ class App extends React.Component {
 
 	onButtonSubmit = () => {
 		this.setState({ imageUrl: this.state.input });
-		fetch('http://localhost:3000/imageurl', {
+		fetch('https://smartbrain-api.justinelmore.dev/imageurl', {
 			method: 'post',
 			headers: {
 				'Content-Type': 'application/json',
@@ -216,7 +219,7 @@ class App extends React.Component {
 			.then((response) => response.json())
 			.then((response) => {
 				if (response) {
-					fetch('http://localhost:3000/image', {
+					fetch('https://smartbrain-api.justinelmore.dev/image', {
 						method: 'put',
 						headers: {
 							'Content-Type': 'application/json',

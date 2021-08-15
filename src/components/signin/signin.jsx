@@ -22,7 +22,7 @@ class SignIn extends React.Component {
 	};
 
 	onSubmitSignIn = () => {
-		fetch('http://localhost:3000/signin', {
+		fetch('https://smartbrain-api.justinelmore.dev/signin', {
 			method: 'post',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
@@ -35,13 +35,16 @@ class SignIn extends React.Component {
 				if (data.userId && data.success) {
 					this.saveAuthTokenInSession(data.token);
 
-					fetch(`http://localhost:3000/profile/${data.userId}`, {
-						method: 'GET',
-						headers: {
-							'Content-Type': 'application/json',
-							Authorization: data.token,
-						},
-					})
+					fetch(
+						`https://smartbrain-api.justinelmore.dev/profile/${data.userId}`,
+						{
+							method: 'GET',
+							headers: {
+								'Content-Type': 'application/json',
+								Authorization: data.token,
+							},
+						}
+					)
 						.then((resp) => resp.json())
 						.then((user) => {
 							console.log(user);
