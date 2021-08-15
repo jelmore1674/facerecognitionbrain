@@ -13,7 +13,8 @@ class Rank extends React.Component {
 	}
 
 	componentDidUpdate(prevProps, prevState) {
-		if (prevProps.entires == this.props.entires) {
+		if (prevProps.entries === this.props.entries) {
+			return null;
 		}
 		this.generateEmoji(this.props.entries);
 	}
